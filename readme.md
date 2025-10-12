@@ -103,7 +103,9 @@ Blog post 2: [how the GPU is used to speed up the brute force search](https://ar
 
 ## Production ready
 
-abc has been used in *many* Atari and Amiga demos
+abc has been used in *many* Atari and Amiga demos (and one game :) )
+
+[<img src="https://content.pouet.net/files/screenshots/00096/00096577.jpg">](https://www.pouet.net/prod.php?which=96577)
 
 [<img src="https://content.pouet.net/files/screenshots/00094/00094129.jpg">](https://www.pouet.net/prod.php?which=94129)
 
