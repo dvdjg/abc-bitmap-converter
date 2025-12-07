@@ -24,7 +24,8 @@ ConvertParams::ConvertParams()
 	ste = false;
 	bitplanCount = -1;
 	gpu = true;
-
+	mask = false;
+	invMask = false;
 	cropX = 0;
 	cropY = 0;
 	cropW = 0;
@@ -280,9 +281,15 @@ bool	ConvertParams::Validate(pngFile& bitmap)
 				printf("ERROR: Image size should be exact multiple of tile size (-tilesize)\n");
 				ret = false;
 			}
+
+			const int tileWidthMult = atari ? 16 : 8;
+			const char* sPlatform = atari ? "Atari" : "Amiga";
+			if (tileSizeX % tileWidthMult)
+			{
+				printf("ERROR: tile size width should be multiple of %d for %s platform\n", tileWidthMult, sPlatform);
+				return false;
+			}
 		}
-
-
 	}
 	else
 	{
@@ -389,6 +396,15 @@ bool	ConvertParams::Validate(pngFile& bitmap)
 		return false;
 	}
 
+	if (mask)
+	{
+		if ((rgb) || (AnyHam()) || (multiPalette))
+		{
+			printf("-mask mode can't be used with -rgb, -quantize, -mpp or HAM\n");
+			return false;
+		}
+	}
+
 	return ret;
 }
 
@@ -405,7 +421,8 @@ void	Help()
 			"\t-ham : convert to Amiga HAM6 format (brute force best result)\n"
 			"\t-sham : convert to Amiga Sliced-HAM6 format (brute force best result)\n"
 			"\t-sham5b : convert to best quality Amiga SHAM5b (31 shades) (brute force best result)\n"
-			"Output files options:\n"
+			"\t-mask : convert image to 1bit mask\n"
+		   "Output files options:\n"
 			"\t-b <file> : bitmap binary output file\n"
 			"\t-p <file> : palette binary output file\n"
 			"\t-t <file> : tile-set binary output file\n"
@@ -430,7 +447,8 @@ void	Help()
 			"\t-atari : use Atari bitplan format output\n"
 			"\t-ste : use Atari STE palette format (Atari default)\n"
 			"\t-stf : use Atari STF palette format (3bits per component)\n"
-			"\t-sprw <w> : input image contains w pixels width tiles\n"
+		    "\t-inv : invert mask when using -mask mode\n"
+		    "\t-sprw <w> : input image contains w pixels width tiles\n"
 			"\t-sprh <h> : input image contains h pixels high tiles\n"
 			"\t-sprc <n> : input image contains n tiles\n"
 			"\t-cropx <x> : crop source image at x position\n"
@@ -630,6 +648,15 @@ bool	ParseArgs(int argc, char* argv[], ConvertParams& params)
 			{
 				params.atari = true;
 			}
+			else if (0 == strcmp("-mask", argv[argId]))
+			{
+				params.mask = true;
+				params.bitplanCount = 5;	// max bpc by default
+			}
+			else if (0 == strcmp("-inv", argv[argId]))
+			{
+				params.invMask = true;
+			}
 			else
 			{
 				printf("Unknown option \"%s\"\n", argv[argId]);
@@ -825,7 +852,7 @@ void outputBitplanLine(int bitplan, const u8* pixels, int w, FILE* hf)
 	}
 }
 
-static void outputBitplanAtariLine(int bitplanCount, const u8* pixels, int w, FILE* hf)
+void outputBitplanAtariLine(int bitplanCount, const u8* pixels, int w, FILE* hf)
 {
 	assert(0 == (w & 15));
 	for (int x = 0; x < w; x += 16)
@@ -836,6 +863,25 @@ static void outputBitplanAtariLine(int bitplanCount, const u8* pixels, int w, FI
 		}
 		pixels += 16;
 	}
+}
+
+bool AmigAtariBitmap::ConvertToMask(bool inv)
+{
+	// consider index 0 background, any other index is sprite mask
+	const int invX = inv ? 1 : 0;
+	for (int y = 0; y < m_h; y++)
+	{
+		u8* pixels = m_pixels + y * m_w;
+		for (int x = 0; x < m_w; x++)
+		{
+			const int wv = (pixels[x] ? 1 : 0) ^ invX;
+			pixels[x] = wv;
+		}
+	}
+	m_bpc = 1;
+	m_palettes[0].SetRGB444(0);
+	m_palettes[1].SetRGB444(0xfff);
+	return true;
 }
 
 bool	AmigAtariBitmap::SaveBitplans(const ConvertParams& params, const char* sFilename)
@@ -1303,7 +1349,7 @@ int	AmigAtariBitmap::GetPixelId(int x, int y) const
 
 int main(int argc, char*argv[])
 {
-	printf("AmigAtari Bitmap Converter v2.04 by Leonard/Oxygene\n"
+	printf("AmigAtari Bitmap Converter v2.05 by Leonard/Oxygene\n"
 	       "(GPU Enhanced version)\n\n");
 
 	ConvertParams params;
@@ -1471,8 +1517,13 @@ int main(int argc, char*argv[])
 							out.ColorIndexRemap(oldId, rm.newId);
 						}
 					}
-				}
 
+					if (params.mask)
+					{
+						printf("Converting image to 1bitplan mask\n");
+						out.ConvertToMask(params.invMask);						
+					}
+				}
 			}
 
 			if ( params.rgb)
@@ -1494,7 +1545,7 @@ int main(int argc, char*argv[])
 					if ( ts.Create(out, params.tileSizeX, params.tileSizeY))
 					{
 						if (params.dstTilesetFilename)
-							ts.saveTileset(params.dstTilesetFilename, out.m_bpc);
+							ts.saveTileset(params.dstTilesetFilename, out.m_bpc, params.atari);
 						if (params.dstTilemapFilename)
 							ts.saveTilemap(params.dstTilemapFilename);
 					}

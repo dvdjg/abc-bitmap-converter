@@ -1,4 +1,4 @@
-# ABC (AmigAtari Bitmap Converter) v2.04
+# ABC (AmigAtari Bitmap Converter) v2.05
 
 AmigAtari Bitmap Converter (abc) is a command line tool to convert bitmap images into ready to use binary data. Main use case is demo creation.
 One key feature is brute force best palette search when color quantization is needed. GPU computing power is used to make this brute force search faster!
@@ -52,6 +52,7 @@ Export modes:
 	-ham : convert to Amiga HAM6 format (brute force best result)
 	-sham : convert to Amiga Sliced-HAM6 format (brute force best result)
 	-sham5b : convert to best quality Amiga SHAM5b (31 shades) (brute force best result)
+	-mask : convert image to 1bit mask
 Output files options:
 	-b <file> : bitmap binary output file
 	-p <file> : palette binary output file
@@ -77,6 +78,7 @@ Options:
 	-atari : use Atari bitplan format output
 	-ste : use Atari STE palette format (Atari default)
 	-stf : use Atari STF palette format (3bits per component)
+    -inv : invert mask when using -mask mode
 	-sprw <w> : input image contains w pixels width tiles
 	-sprh <h> : input image contains h pixels high tiles
 	-sprc <n> : input image contains n tiles

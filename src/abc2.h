@@ -28,6 +28,8 @@ struct ConvertParams
 	bool		ham;
 	bool		sham;
 	bool		sham5b;
+	bool mask;
+	bool invMask;
 	bool		AnyHam() const { return ham | sham | sham5b; }
 	bool		tilemapMode() const {return ((tileSizeX > 0) && (tileSizeY > 0)); }
 	bool		gpu;
@@ -173,6 +175,7 @@ struct AmigAtariBitmap
 	bool		SaveIff(const ConvertParams& params, const char* sFilename);
 	bool		SavePalettes(const ConvertParams& params, const char* sFilename);
 	bool		SavePcPreview(const ConvertParams& params, const char* sFilename);
+	bool ConvertToMask(bool inv);
 
 	int			m_w;
 	int			m_h;
@@ -189,4 +192,4 @@ struct Color555;
 int ColorDepthCount(const pngFile& bitmap);
 bool	MultiPaletteOptimize(const u8* pixels, int w, int h, int bitplanCount, bool hamLayout);
 void outputBitplanLine(int bitplan, const u8* pixels, int w, FILE* hf);
-
+void outputBitplanAtariLine(int bitplanCount, const u8* pixels, int w, FILE* hf);

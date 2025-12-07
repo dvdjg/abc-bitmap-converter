@@ -1,3 +1,8 @@
+v2.05
+	- added "-mask" to export 1 bitplan mask
+	- added "-inv" option to invert the bitplan mask
+	- fixed tileset/tilemap save for "-atari" format
+
 v2.04
 	- chunky mode supports 5 bitplans (1 pixel per byte)
 

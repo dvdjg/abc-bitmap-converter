@@ -15,7 +15,7 @@ public:
 	~TileSet();
 
 	bool Create(const AmigAtariBitmap& img, int tileSizeX, int tileSizeY);
-	void saveTileset(const char* fname, int bitplanCount);
+	void saveTileset(const char* fname, int bitplanCount,bool atari);
 	void saveTilemap(const char* fname);
 
 private:

@@ -123,7 +123,7 @@ void TileSet::saveTilemap(const char* fname)
 	}
 }
 
-void TileSet::saveTileset(const char* fname, int bitplanCount)
+void TileSet::saveTileset(const char* fname, int bitplanCount, bool atari)
 {
 	FILE* hf;
 	if (0 == fopen_s(&hf, fname, "wb"))
@@ -133,9 +133,16 @@ void TileSet::saveTileset(const char* fname, int bitplanCount)
 		{
 			for (int y=0;y<m_tileSizeY;y++)
 			{
-				for (int b=0;b<bitplanCount;b++)
+				if (atari)
 				{
-					outputBitplanLine(b, pixels, m_tileSizeX, hf);
+					outputBitplanAtariLine(bitplanCount, pixels, m_tileSizeX, hf);
+				}
+				else
+				{
+					for (int b=0;b<bitplanCount;b++)
+					{
+						outputBitplanLine(b, pixels, m_tileSizeX, hf);
+					}
 				}
 				pixels += m_tileSizeX;
 			}
