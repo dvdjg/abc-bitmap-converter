@@ -30,6 +30,7 @@ struct ConvertParams
 	bool		sham5b;
 	bool mask;
 	bool invMask;
+	bool copper;
 	bool		AnyHam() const { return ham | sham | sham5b; }
 	bool		tilemapMode() const {return ((tileSizeX > 0) && (tileSizeY > 0)); }
 	bool		gpu;

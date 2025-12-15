@@ -1,4 +1,4 @@
-# ABC (AmigAtari Bitmap Converter) v2.05
+# ABC (AmigAtari Bitmap Converter) v2.06
 
 AmigAtari Bitmap Converter (abc) is a command line tool to convert bitmap images into ready to use binary data. Main use case is demo creation.
 One key feature is brute force best palette search when color quantization is needed. GPU computing power is used to make this brute force search faster!
@@ -40,7 +40,7 @@ Convert font.png into 3 bitplans font of 32*24 pixels per letter.
 ## Command line options
 
 ````
-AmigAtari Bitmap Converter v2.02 by Leonard/Oxygene
+AmigAtari Bitmap Converter v2.06 by Leonard/Oxygene
 (GPU Enhanced version)
 
 Usage:
@@ -78,6 +78,7 @@ Options:
 	-atari : use Atari bitplan format output
 	-ste : use Atari STE palette format (Atari default)
 	-stf : use Atari STF palette format (3bits per component)
+	-copper: save palette file as copper ready to use	
     -inv : invert mask when using -mask mode
 	-sprw <w> : input image contains w pixels width tiles
 	-sprh <h> : input image contains h pixels high tiles

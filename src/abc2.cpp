@@ -26,6 +26,7 @@ ConvertParams::ConvertParams()
 	gpu = true;
 	mask = false;
 	invMask = false;
+	copper = false;
 	cropX = 0;
 	cropY = 0;
 	cropW = 0;
@@ -405,6 +406,26 @@ bool	ConvertParams::Validate(pngFile& bitmap)
 		}
 	}
 
+	if (copper)
+	{
+		if (multiPalette || sham || sham5b)
+		{
+			printf("-copper only work with single palette\n");
+			return false;
+		}
+
+		if ((bitplanCount <= 0) && (!ham))
+		{
+			printf("-copper only work with palette (bitplans)\n");
+			return false;
+		}
+		if (atari)
+		{
+			printf("-copper only work with amiga mode\n");
+			return false;
+		}
+	}
+
 	return ret;
 }
 
@@ -447,6 +468,7 @@ void	Help()
 			"\t-atari : use Atari bitplan format output\n"
 			"\t-ste : use Atari STE palette format (Atari default)\n"
 			"\t-stf : use Atari STF palette format (3bits per component)\n"
+			"\t-copper: save palette file as copper ready to use\n"
 		    "\t-inv : invert mask when using -mask mode\n"
 		    "\t-sprw <w> : input image contains w pixels width tiles\n"
 			"\t-sprh <h> : input image contains h pixels high tiles\n"
@@ -656,6 +678,10 @@ bool	ParseArgs(int argc, char* argv[], ConvertParams& params)
 			else if (0 == strcmp("-inv", argv[argId]))
 			{
 				params.invMask = true;
+			}
+			else if (0 == strcmp("-copper", argv[argId]))
+			{
+				params.copper = true;
 			}
 			else
 			{
@@ -1088,7 +1114,8 @@ bool	AmigAtariBitmap::SavePalettes(const ConvertParams& params, const char* sFil
 	assert(sFilename);
 
 	printf("Saving %s palette binary file \"%s\"...\n", params.atari ? "Atari" : "Amiga", sFilename);
-
+	if (params.copper)
+		printf("(copper-list mode enabled)\n");
 	bool ret = false;
 	FILE* hf;
 	if (0 == fopen_s(&hf, sFilename, "wb"))
@@ -1102,6 +1129,12 @@ bool	AmigAtariBitmap::SavePalettes(const ConvertParams& params, const char* sFil
 			for (int c = 0; c < colorCount; c++)
 			{
 				u16 val = AmigaAtariColorExport(params, *pal++);
+				if (params.copper)
+				{
+					int copAd = 0x180 + c * 2;
+					fputc(copAd >> 8, hf);
+					fputc(copAd&255, hf);
+				}
 				fputc(val >> 8, hf);
 				fputc(val&255, hf);
 			}
@@ -1349,7 +1382,7 @@ int	AmigAtariBitmap::GetPixelId(int x, int y) const
 
 int main(int argc, char*argv[])
 {
-	printf("AmigAtari Bitmap Converter v2.05 by Leonard/Oxygene\n"
+	printf("AmigAtari Bitmap Converter v2.06 by Leonard/Oxygene\n"
 	       "(GPU Enhanced version)\n\n");
 
 	ConvertParams params;

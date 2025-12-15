@@ -1,3 +1,6 @@
+v2.06
+	- added "-copper" option to save palette file as copper ready to use
+
 v2.05
 	- added "-mask" to export 1 bitplan mask
 	- added "-inv" option to invert the bitplan mask
