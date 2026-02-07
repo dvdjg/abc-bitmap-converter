@@ -1,0 +1,51 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Depurar abc2 (Debug)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/x64/Debug/abc2.exe",
+            "args": [
+                "cycle-op.png",
+                "-bpc", "5",
+                "-quantize", "-floyd",
+                "-preview", "cycle-op-preview_32_colors.png",
+                "-iff", "cycle-op-32_colors.iff"
+            ],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "preLaunchTask": "Build Debug (x64)"
+        },
+        {
+            "name": "Depurar abc2 (sin compilar)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/x64/Debug/abc2.exe",
+            "args": [
+                "cycle-op.png",
+                "-bpc", "5",
+                "-quantize", "-floyd",
+                "-preview", "cycle-op-preview_32_colors.png",
+                "-iff", "cycle-op-32_colors.iff"
+            ],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Ejecutar abc2 (Release)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/abc2.exe",
+            "args": [
+                "cycle-op.png",
+                "-bpc", "5",
+                "-quantize", "-floyd",
+                "-preview", "cycle-op-preview_32_colors.png",
+                "-iff", "cycle-op-32_colors.iff"
+            ],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false
+        }
+    ]
+}

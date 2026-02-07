@@ -1,0 +1,40 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Debug (x64)",
+            "type": "shell",
+            "command": "${workspaceFolder}/build.bat",
+            "args": ["Debug", "x64"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$msCompile"],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Build Release (x64)",
+            "type": "shell",
+            "command": "${workspaceFolder}/build.bat",
+            "args": ["Release", "x64"],
+            "group": "build",
+            "problemMatcher": ["$msCompile"],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Limpiar",
+            "type": "shell",
+            "command": "${workspaceFolder}/build.bat",
+            "args": ["Clean"],
+            "group": "build",
+            "problemMatcher": []
+        }
+    ]
+}
